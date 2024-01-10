@@ -4,6 +4,7 @@ import { MessageController } from './message.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Message, MessageSchema } from './message.schema';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -16,6 +17,16 @@ import { Message, MessageSchema } from './message.schema';
       inject: [ConfigService],
     }),
     MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }]),
+    ClientsModule.register([
+      {
+        name: 'MESSAGE_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          port: 3001,
+        },
+      },
+    ]),
   ],
   controllers: [MessageController],
   providers: [MessageService],
