@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
-import { Chat, ChatDocument } from './chat.schema';
+import { Chat } from './chat.schema';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 
 @Injectable()
 export class ChatService {
+  private chatModel;
   constructor(
     @InjectConnection('chat') private readonly connection: Connection,
-  ) {}
-  // constructor(@InjectModel(Chat.name) private chatModel: Model<ChatDocument>) {}
+  ) {
+    this.chatModel = this.connection.model(Chat.name);
+  }
   create(createChatDto: CreateChatDto) {
     return 'This action adds a new chat';
   }

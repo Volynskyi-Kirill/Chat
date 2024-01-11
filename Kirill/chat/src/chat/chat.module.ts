@@ -10,10 +10,10 @@ import { ChatDBModule } from './chat.db';
     ClientsModule.register([
       {
         name: 'CHAT_SERVICE',
-        transport: Transport.TCP,
+        transport: Transport.REDIS,
         options: {
           host: 'localhost',
-          port: 3001,
+          port: 6379,
         },
       },
     ]),

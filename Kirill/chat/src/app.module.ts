@@ -11,23 +11,23 @@ import { MessageModule } from './message/message.module';
     ClientsModule.register([
       {
         name: 'USER_SERVICE',
-        transport: Transport.TCP,
+        transport: Transport.REDIS,
         options: {
           host: 'localhost',
-          port: 3001,
+          port: 6379,
         },
       },
     ]),
-    ClientsModule.register([
-      {
-        name: 'MESSAGE_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3002,
-        },
-      },
-    ]),
+    // ClientsModule.register([
+    //   {
+    //     name: 'MESSAGE_SERVICE',
+    //     transport: Transport.REDIS,
+    //     options: {
+    //       host: 'localhost',
+    //       port: 6379,
+    //     },
+    //   },
+    // ]),
     UserModule,
     ChatModule,
     MessageModule,

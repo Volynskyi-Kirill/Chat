@@ -8,11 +8,11 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @MessagePattern({ cmd: 'get' })
-  handleUserGet() {
-    console.log(`from messege`);
-    return 'from messege';
-  }
+  // @MessagePattern({ cmd: 'get' })
+  // handleUserGet() {
+  //   console.log(`from messege`);
+  //   return 'from messege';
+  // }
 
   @MessagePattern('createMessage')
   create(@Payload() createMessageDto: CreateMessageDto) {

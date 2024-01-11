@@ -5,7 +5,7 @@ import { ClientProxy } from '@nestjs/microservices';
 export class AppService {
   constructor(
     @Inject('USER_SERVICE') private userClient: ClientProxy,
-    @Inject('MESSAGE_SERVICE') private messageClient: ClientProxy,
+    // @Inject('MESSAGE_SERVICE') private messageClient: ClientProxy,
   ) {}
 
   getHello(): string {
@@ -13,7 +13,7 @@ export class AppService {
   }
 
   async getUserById(id: string) {
-    this.messageClient.send({ cmd: 'get' }, id);
-    return this.userClient.send({ cmd: 'get' }, id);
+    // await this.messageClient.send({ cmd: 'get' }, id);
+    return await this.userClient.send({ cmd: 'get' }, id);
   }
 }
