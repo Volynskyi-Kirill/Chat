@@ -9,7 +9,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/chat'),
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/chat', {
+      connectionName: 'chat',
+    }),
     // MongooseModule.forRootAsync({
     //   imports: [ConfigModule],`
     //   useFactory: async (configService: ConfigService) => ({
@@ -17,7 +19,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     //   }),
     //   inject: [ConfigService],
     // }),
-    MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
+    MongooseModule.forFeature(
+      [{ name: Chat.name, schema: ChatSchema }],
+      'chat',
+    ),
     ClientsModule.register([
       {
         name: 'CHAT_SERVICE',

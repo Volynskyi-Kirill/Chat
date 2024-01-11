@@ -15,8 +15,12 @@ import { User, UserSchema } from './user.schema';
         uri: configService.get<string>('USER_DB'),
       }),
       inject: [ConfigService],
+      connectionName: 'user',
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature(
+      [{ name: User.name, schema: UserSchema }],
+      'user',
+    ),
     ClientsModule.register([
       {
         name: 'USER_SERVICE',

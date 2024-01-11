@@ -15,15 +15,19 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         uri: configService.get<string>('MESSAGE_DB'),
       }),
       inject: [ConfigService],
+      connectionName: 'message',
     }),
-    MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }]),
+    MongooseModule.forFeature(
+      [{ name: Message.name, schema: MessageSchema }],
+      'message',
+    ),
     ClientsModule.register([
       {
         name: 'MESSAGE_SERVICE',
         transport: Transport.TCP,
         options: {
           host: 'localhost',
-          port: 3001,
+          port: 3002,
         },
       },
     ]),

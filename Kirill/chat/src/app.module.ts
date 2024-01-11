@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -9,9 +8,6 @@ import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
-    // MongooseModule.forRoot('mongodb://127.0.0.1:27017/chat'),
-    // MongooseModule.forRoot('mongodb://127.0.0.1:27017/user'),
-    // MongooseModule.forRoot('mongodb://127.0.0.1:27017/message'),
     ClientsModule.register([
       {
         name: 'USER_SERVICE',
@@ -19,6 +15,16 @@ import { MessageModule } from './message/message.module';
         options: {
           host: 'localhost',
           port: 3001,
+        },
+      },
+    ]),
+    ClientsModule.register([
+      {
+        name: 'MESSAGE_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          port: 3002,
         },
       },
     ]),
