@@ -1,27 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectConnection } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { Message } from './message.schema';
 
 @Injectable()
 export class MessageService {
+  private messageModel;
+  constructor(
+    @InjectConnection('message') private readonly connection: Connection,
+  ) {
+    this.messageModel = this.connection.model(Message.name);
+  }
+
   create(createMessageDto: CreateMessageDto) {
-    return 'This action adds a new message';
+    return this.messageModel.create(createMessageDto);
   }
 
   findAll() {
-    return `This action returns all message`;
+    return this.messageModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
+  findOne(id: string) {
+    return this.messageModel.findById(id);
   }
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
+  update(id: string, updateMessageDto: UpdateMessageDto) {
+    return this.messageModel.findByIdAndUpdate(id, updateMessageDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} message`;
+  remove(id: string) {
+    return this.messageModel.findByIdAndDelete(id);
   }
 }

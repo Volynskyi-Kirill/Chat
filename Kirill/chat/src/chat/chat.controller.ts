@@ -19,7 +19,7 @@ export class ChatController {
   }
 
   @MessagePattern('findOneChat')
-  findOne(@Payload() id: number) {
+  findOne(@Payload() id: string) {
     return this.chatService.findOne(id);
   }
 
@@ -29,7 +29,7 @@ export class ChatController {
   }
 
   @MessagePattern('removeChat')
-  remove(@Payload() id: number) {
+  remove(@Payload() id: string) {
     return this.chatService.remove(id);
   }
 }

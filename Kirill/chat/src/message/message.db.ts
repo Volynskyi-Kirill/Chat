@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Message, MessageSchema } from './message.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-export const DB_CONNECTION_NAME = 'messages';
+export const DB_CONNECTION_NAME = 'message';
 @Module({
   imports: [
     ConfigModule.forRoot(),
