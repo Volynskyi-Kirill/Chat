@@ -1,26 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { MessageController } from './message.controller';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Message, MessageSchema } from './message.schema';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { MessageDBModule } from './message.db';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MESSAGE_DB'),
-      }),
-      inject: [ConfigService],
-      connectionName: 'message',
-    }),
-    MongooseModule.forFeature(
-      [{ name: Message.name, schema: MessageSchema }],
-      'message',
-    ),
+    MessageDBModule,
     ClientsModule.register([
       {
         name: 'MESSAGE_SERVICE',
