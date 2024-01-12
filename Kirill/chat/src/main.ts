@@ -10,6 +10,7 @@ async function bootstrap() {
   app.connectMicroservice({
     transport: Transport.REDIS,
     options: {
+      host: 'localhost',
       port: 6379,
     },
   });

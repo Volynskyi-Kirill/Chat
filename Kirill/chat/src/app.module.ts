@@ -18,16 +18,6 @@ import { MessageModule } from './message/message.module';
         },
       },
     ]),
-    // ClientsModule.register([
-    //   {
-    //     name: 'MESSAGE_SERVICE',
-    //     transport: Transport.REDIS,
-    //     options: {
-    //       host: 'localhost',
-    //       port: 6379,
-    //     },
-    //   },
-    // ]),
     UserModule,
     ChatModule,
     MessageModule,
