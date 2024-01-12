@@ -10,7 +10,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { EventPattern, MessagePattern } from '@nestjs/microservices';
+import { EventPattern } from '@nestjs/microservices';
 
 @Controller('user')
 export class UserController {
@@ -18,11 +18,6 @@ export class UserController {
 
   @EventPattern('user:test')
   handleUserGet(id: string) {
-    console.log(`you ask for user: ${id}`);
-    return 'user:' + id;
-  }
-  @MessagePattern({ cmd: 'get' })
-  handleUserSGet(id: string) {
     console.log(`you ask for user: ${id}`);
     return 'user:' + id;
   }
