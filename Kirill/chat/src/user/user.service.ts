@@ -14,12 +14,12 @@ export class UserService {
     this.userModel = this.connection.model(User.name);
   }
 
-  create(createUserDto: CreateUserDto) {
-    return this.userModel.create(createUserDto);
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return await this.userModel.create(createUserDto);
   }
 
-  findAll() {
-    return this.userModel.find();
+  async findAll() {
+    return await this.userModel.find();
   }
 
   findOne(id: string) {
