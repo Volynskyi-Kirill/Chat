@@ -1,17 +1,22 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 
-@Controller()
+@Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @MessagePattern('createChat')
-  create(@Payload() createChatDto: CreateChatDto) {
+  @Post()
+  create(@Body() createChatDto: CreateChatDto) {
     return this.chatService.create(createChatDto);
   }
+
+  // @MessagePattern('createChat')
+  // create(@Payload() createChatDto: CreateChatDto) {
+  //   return this.chatService.create(createChatDto);
+  // }
 
   @MessagePattern('findAllChat')
   findAll() {

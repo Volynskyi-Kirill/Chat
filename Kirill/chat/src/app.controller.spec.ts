@@ -1,25 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { RedisModule } from './modules/redis.module';
 
 describe('AppController', () => {
   let appController: AppController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      imports: [
-        ClientsModule.register([
-          {
-            name: 'USER_SERVICE',
-            transport: Transport.REDIS,
-            options: {
-              host: 'localhost',
-              port: 6379,
-            },
-          },
-        ]),
-      ],
+      imports: [RedisModule],
       controllers: [AppController],
       providers: [AppService],
     }).compile();

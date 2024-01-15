@@ -14,7 +14,7 @@ export class ChatService {
     this.chatModel = this.connection.model(Chat.name);
   }
   create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+    return this.chatModel.create(createChatDto);
   }
 
   findAll() {
