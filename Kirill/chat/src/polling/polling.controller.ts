@@ -1,19 +1,14 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { PollingService } from './polling.service';
-import { CreateMessageDto } from '../message/dto/create-message.dto';
-import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
+import { EventPattern } from '@nestjs/microservices';
+import { Message } from '../message/message.schema';
 
 @Controller('polling')
 export class PollingController {
   constructor(private readonly pollingService: PollingService) {}
 
-  // @Post('/message')
-  // handleMessage(@Body() createMessageDto: CreateMessageDto) {
-  //   return this.pollingService.handleMessage(createMessageDto);
-  // }
-
-  @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: any) {
-    console.log('data: ', data);
+  @EventPattern('sendMessage')
+  sendMessage(message: Message) {
+    this.pollingService.sendMessage(message);
   }
 }

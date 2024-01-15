@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
@@ -17,13 +9,9 @@ export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @EventPattern('createMessage')
-  handleMessageCreate(createMessageDto: CreateMessageDto) {
-    this.messageService.create(createMessageDto);
-  }
-
-  @Post()
-  create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messageService.create(createMessageDto);
+  async handleMessageCreate(createMessageDto: CreateMessageDto) {
+    const message = await this.messageService.create(createMessageDto);
+    this.messageService.sendMessage(message);
   }
 
   @Get()
