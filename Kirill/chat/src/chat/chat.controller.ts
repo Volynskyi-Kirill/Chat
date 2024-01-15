@@ -13,11 +13,6 @@ export class ChatController {
     return this.chatService.create(createChatDto);
   }
 
-  // @MessagePattern('createChat')
-  // create(@Payload() createChatDto: CreateChatDto) {
-  //   return this.chatService.create(createChatDto);
-  // }
-
   @MessagePattern('findAllChat')
   findAll() {
     return this.chatService.findAll();

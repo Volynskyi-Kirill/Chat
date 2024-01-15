@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
-import { Chat } from '../chat/chat.schema';
-// import { Roles } from './utils/user.enum';
+import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -12,14 +10,6 @@ export class User {
 
   @Prop()
   chats: string[];
-  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }] })
-  // chats: Chat[];
-
-  //   @Prop({
-  //     required: true,
-  //     type: [{ type: String, enum: Roles }],
-  //   })
-  //   roles: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
