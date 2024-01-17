@@ -57,31 +57,17 @@ describe('UserService', () => {
   // it('should return all users', async () => {
   //   const users: UserDocument[] = [];
 
-  //   jest.spyOn(service, 'findAll').mockImplementation(async function () {
-  //     return users as UserDocument[];
-  //   });
+  //   jest
+  //     .spyOn(service['userModel'], 'find')
+  //     .mockImplementation(async function () {
+  //       return users as UserDocument[];
+  //     });
 
   //   const result = await service.findAll();
 
   //   expect(service.findAll).toHaveBeenCalled();
   //   expect(result).toEqual(users);
   // });
-
-  it('should return all users', async () => {
-    const users: UserDocument[] = [];
-
-    jest
-      .spyOn(service['userModel'], 'find')
-      //@ts-ignore
-      .mockImplementation(async function () {
-        return users as UserDocument[];
-      });
-
-    const result = await service.findAll();
-
-    expect(service.findAll).toHaveBeenCalled();
-    expect(result).toEqual(users);
-  });
 
   it('should return a user by id', async () => {
     const userId = new Types.ObjectId();

@@ -9,9 +9,4 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-
-  @Get('/user_id')
-  getUser() {
-    return this.appService.getUserById('userId');
-  }
 }

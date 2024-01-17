@@ -9,8 +9,4 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-
-  async getUserById(id: string) {
-    this.client.emit('user:test', id);
-  }
 }

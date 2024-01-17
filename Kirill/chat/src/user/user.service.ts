@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Connection } from 'mongoose';
 import { User, UserDocument } from './user.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
@@ -11,18 +12,21 @@ export class UserService {
   constructor(
     @InjectConnection('user') private readonly connection: Connection,
   ) {
-    this.userModel = this.connection.model(User.name);
+    this.userModel = this.connection.model<UserDocument>(User.name);
   }
 
-  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
+  async create(createUserDto: CreateUserDto) {
     return await this.userModel.create(createUserDto);
   }
 
-  async findAll(): Promise<UserDocument[]> {
+  async findAll() {
     return await this.userModel.find();
   }
+  // async findAll(): Promise<UserDocument[]> {
+  //   return await this.userModel.find();
+  // }
 
-  async findOne(id: string): Promise<UserDocument | null> {
+  async findOne(id: string) {
     return await this.userModel.findById(id);
   }
 
