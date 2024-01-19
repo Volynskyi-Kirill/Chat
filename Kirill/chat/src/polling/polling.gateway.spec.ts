@@ -4,7 +4,7 @@ import { PollingService } from './polling.service';
 import { Socket, io } from 'socket.io-client';
 import { RedisModule } from '../modules/redis.module';
 import { INestApplication } from '@nestjs/common';
-import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { ConfigModule } from '@nestjs/config';
 
 describe('PollingGateway', () => {
   let gateway: PollingGateway;
@@ -13,15 +13,19 @@ describe('PollingGateway', () => {
 
   beforeEach(async () => {
     const testingModule = await Test.createTestingModule({
-      imports: [RedisModule],
+      imports: [RedisModule, ConfigModule.forRoot()],
       providers: [PollingGateway, PollingService],
     }).compile();
 
     gateway = testingModule.get<PollingGateway>(PollingGateway);
 
-    ioClient = io('ws/localhost:3001', {
+    ioClient = io('ws://localhost:3001', {
       autoConnect: false,
       transports: ['websocket'],
+      auth: {
+        token:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTlmZmMwNDNlODliMDllZTRmYTI0MmYiLCJ1c2VybmFtZSI6InRlc3QifQ.PSBMbM4Fs93GtB6Wkdy95wZaRXiSf01wcNwvp0tZSDQ',
+      },
     });
 
     app = await testingModule.createNestApplication();
@@ -38,11 +42,9 @@ describe('PollingGateway', () => {
 
   it('should emit -pong', async () => {
     ioClient.connect();
-    console.log('before promise');
 
     await new Promise<void>((resolve) => {
       ioClient.on('connect', () => {
-        console.log('after connect');
         ioClient.emit('ping');
       });
       ioClient.on('pong', (data) => {
@@ -51,13 +53,5 @@ describe('PollingGateway', () => {
       });
     });
     ioClient.disconnect();
-
-    // @SubscribeMessage("ping")
-    // handlePing() {
-    // return {
-    // 	event: "pong",
-    // 	data: "pong data"
-    // }
-    // }
   });
 });

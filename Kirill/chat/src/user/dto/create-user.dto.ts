@@ -4,5 +4,7 @@ export class CreateUserDto {
   @ApiProperty()
   username: string;
   @ApiProperty()
+  email: string;
+  @ApiProperty()
   chats: string[];
 }
