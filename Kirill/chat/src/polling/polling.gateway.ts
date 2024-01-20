@@ -10,6 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 import { CreateMessageDto } from '../message/dto/create-message.dto';
 import { PollingService } from './polling.service';
+import { MESSAGE_EVENTS } from 'chat-utils';
 
 interface AuthSocket extends Socket {
   user: { userId: string; username: string };
@@ -48,7 +49,7 @@ export class PollingGateway
     console.log(`Client disconnected: ${client.id}`);
   }
 
-  @SubscribeMessage('message')
+  @SubscribeMessage(MESSAGE_EVENTS.MESSAGE)
   handleMessage(
     @ConnectedSocket() client: AuthSocket,
     @MessageBody() createMessageDto: CreateMessageDto,
@@ -57,7 +58,7 @@ export class PollingGateway
     this.pollingService.handleMessage(createMessageDto);
   }
 
-  @SubscribeMessage('ping')
+  @SubscribeMessage(MESSAGE_EVENTS.PING)
   handlePing() {
     console.log('ping: ');
     return {

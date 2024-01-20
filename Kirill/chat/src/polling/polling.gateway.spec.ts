@@ -5,6 +5,7 @@ import { Socket, io } from 'socket.io-client';
 import { RedisModule } from '../modules/redis.module';
 import { INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { MESSAGE_EVENTS } from 'chat-utils';
 
 describe('PollingGateway', () => {
   let gateway: PollingGateway;
@@ -45,7 +46,7 @@ describe('PollingGateway', () => {
 
     await new Promise<void>((resolve) => {
       ioClient.on('connect', () => {
-        ioClient.emit('ping');
+        ioClient.emit(MESSAGE_EVENTS.PING);
       });
       ioClient.on('pong', (data) => {
         expect(data).toBe('pong data');

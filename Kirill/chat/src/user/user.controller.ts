@@ -11,15 +11,15 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EventPattern } from '@nestjs/microservices';
+import { MESSAGE_EVENTS } from 'chat-utils';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @EventPattern('user:test')
-  handleUserGet(id: string) {
-    console.log(`you ask for user: ${id}`);
-    return 'user:' + id;
+  @EventPattern(MESSAGE_EVENTS.CREATE_USER)
+  async handleCreateUser(createUserDto: CreateUserDto) {
+    this.userService.create(createUserDto);
   }
 
   @Post()

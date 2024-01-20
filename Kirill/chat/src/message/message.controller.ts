@@ -3,12 +3,13 @@ import { EventPattern } from '@nestjs/microservices';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { MESSAGE_EVENTS } from 'chat-utils';
 
 @Controller('message')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @EventPattern('createMessage')
+  @EventPattern(MESSAGE_EVENTS.CREATE_MESSAGE)
   async handleMessageCreate(createMessageDto: CreateMessageDto) {
     const message = await this.messageService.create(createMessageDto);
     this.messageService.sendMessage(message);

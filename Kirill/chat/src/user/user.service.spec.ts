@@ -25,6 +25,7 @@ describe('UserService', () => {
   function createUser(userId: Types.ObjectId) {
     return {
       _id: userId,
+      email: 'email@gmail.com',
       username: 'Alex',
       chats: <string[]>[],
     };

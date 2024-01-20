@@ -5,6 +5,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { Message } from '../message/message.schema';
 import { Subject } from 'rxjs';
+import { MESSAGE_EVENTS } from 'chat-utils';
 import * as jwt from 'jsonwebtoken';
 
 interface JwtPayload {
@@ -26,7 +27,7 @@ export class PollingService {
   }
 
   handleMessage(createMessageDto: CreateMessageDto) {
-    this.client.emit('createMessage', createMessageDto);
+    this.client.emit(MESSAGE_EVENTS.CREATE_MESSAGE, createMessageDto);
   }
 
   sendMessage(message: Message) {
