@@ -9,10 +9,10 @@ import { MESSAGE_EVENTS } from 'chat-utils';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @EventPattern(MESSAGE_EVENTS.CREATE_MESSAGE)
-  async handleMessageCreate(createMessageDto: CreateMessageDto) {
+  @EventPattern('incomingMessage')
+  async handleMessage(createMessageDto: CreateMessageDto) {
     const message = await this.messageService.create(createMessageDto);
-    this.messageService.sendMessage(message);
+    this.messageService.handleCreatedMessage(message);
   }
 
   @Get()

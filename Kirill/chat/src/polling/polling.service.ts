@@ -1,16 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateMessageDto } from '../message/dto/create-message.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { Message } from '../message/message.schema';
 import { Subject } from 'rxjs';
-import { MESSAGE_EVENTS } from 'chat-utils';
 import * as jwt from 'jsonwebtoken';
+import { lastValueFrom } from 'rxjs';
 
-interface JwtPayload {
+export interface JwtPayload {
   userId: string;
   username: string;
+  email: string;
 }
 
 @Injectable()
@@ -26,12 +27,24 @@ export class PollingService {
     return this.gatewayEvents;
   }
 
-  handleMessage(createMessageDto: CreateMessageDto) {
-    this.client.emit(MESSAGE_EVENTS.CREATE_MESSAGE, createMessageDto);
+  handleMessage(createMessageDto: CreateMessageDto, userChats: string[]) {
+    const { chatId } = createMessageDto;
+    const isUserHaveAccess = userChats.includes(chatId);
+    
+    if (!isUserHaveAccess) {
+      throw new ForbiddenException();
+    }
+
+    this.client.emit('incomingMessage', createMessageDto);
   }
 
   sendMessage(message: Message) {
     this.gatewayEvents.next({ event: 'message', data: message });
+  }
+
+  async getUserChats(userId: string) {
+    const userChatsRequest = this.client.send({ cmd: 'getUserChats' }, userId);
+    return await lastValueFrom(userChatsRequest);
   }
 
   handleConnection(token: string) {

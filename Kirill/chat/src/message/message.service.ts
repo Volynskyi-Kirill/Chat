@@ -6,7 +6,7 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { Message } from './message.schema';
-import { MESSAGE_EVENTS } from 'chat-utils';
+// import { MESSAGE_EVENTS } from 'chat-utils';
 
 @Injectable()
 export class MessageService {
@@ -22,8 +22,8 @@ export class MessageService {
     return this.messageModel.create(createMessageDto);
   }
 
-  sendMessage(message: Message) {
-    this.client.emit(MESSAGE_EVENTS.SEND_MESSAGE, message);
+  handleCreatedMessage(message: Message) {
+    this.client.emit('messageCreated', message);
   }
 
   findAll() {

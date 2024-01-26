@@ -5,6 +5,4 @@ export class CreateUserDto {
   username: string;
   @ApiProperty()
   email: string;
-  @ApiProperty()
-  chats: string[];
 }

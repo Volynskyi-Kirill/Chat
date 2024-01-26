@@ -9,8 +9,6 @@ export class User {
   username: string;
   @Prop({ required: true, unique: true })
   email: string;
-  @Prop()
-  chats: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
