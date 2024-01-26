@@ -16,6 +16,9 @@ export class Message {
 
   @Prop({ required: true })
   text: string;
+
+  @Prop({ default: null })
+  seenAt: Date;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

@@ -2,19 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule } from '@nestjs/swagger';
 import { swaggerConfig } from './config/swagger.config';
-import { Transport } from '@nestjs/microservices';
 import { CorsConfig } from './config/cors.config';
+import { connectMicroserviceConfig } from './config/connect-microservice.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.connectMicroservice({
-    transport: Transport.REDIS,
-    options: {
-      port: 6379,
-    },
-  });
-
+  app.connectMicroservice(connectMicroserviceConfig);
   app.enableCors(CorsConfig);
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

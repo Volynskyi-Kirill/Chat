@@ -71,6 +71,6 @@ export class UserService {
   }
 
   async sendLink({ email, html, subject }: ISendMessage) {
-    this.client.emit('sendMail', { email, html, subject });
+    this.client.emit('linkCreated', { email, html, subject });
   }
 }

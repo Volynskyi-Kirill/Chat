@@ -7,8 +7,8 @@ import { ISendMessage } from './mail.service';
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
-  @EventPattern('sendMail')
-  handleSendMail({ email, html, subject }: ISendMessage) {
+  @EventPattern('linkCreated')
+  handleLink({ email, html, subject }: ISendMessage) {
     this.mailService.sendMessage({ email, html, subject });
   }
 }

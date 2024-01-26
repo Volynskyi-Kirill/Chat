@@ -6,7 +6,6 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { Message } from './message.schema';
-// import { MESSAGE_EVENTS } from 'chat-utils';
 
 @Injectable()
 export class MessageService {
@@ -24,6 +23,19 @@ export class MessageService {
 
   handleCreatedMessage(message: Message) {
     this.client.emit('messageCreated', message);
+  }
+
+  async handleMessageViewed(seenFrom: { chatId: string; messageId: string }) {
+    const { messageId } = seenFrom;
+
+    const message = await this.messageModel.findByIdAndUpdate(
+      messageId,
+      {
+        seenAt: Date.now(),
+      },
+      { new: true },
+    );
+    this.client.emit('updateMessageViewed', message);
   }
 
   findAll() {

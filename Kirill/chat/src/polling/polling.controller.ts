@@ -2,7 +2,6 @@ import { Controller } from '@nestjs/common';
 import { PollingService } from './polling.service';
 import { EventPattern } from '@nestjs/microservices';
 import { Message } from '../message/message.schema';
-import { MESSAGE_EVENTS } from 'chat-utils';
 
 @Controller('polling')
 export class PollingController {
@@ -11,5 +10,10 @@ export class PollingController {
   @EventPattern('messageCreated')
   handleMessageCreated(message: Message) {
     this.pollingService.sendMessage(message);
+  }
+
+  @EventPattern('updateMessageViewed')
+  handleMessageViewed(message: Message) {
+    this.pollingService.sendMessageViewed(message);
   }
 }

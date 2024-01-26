@@ -19,6 +19,11 @@ interface AuthSocket extends Socket {
   };
 }
 
+export interface SeenFrom {
+  chatId: string;
+  messageId: string;
+}
+
 @WebSocketGateway()
 export class PollingGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -27,8 +32,6 @@ export class PollingGateway
   @WebSocketServer() server: Server;
 
   afterInit(server: Server) {
-    console.log('WevSocket Gateway initialized');
-
     this.pollingService.getEvents().subscribe({
       next: ({ event, data }) => {
         server.emit(event, data);
@@ -37,8 +40,9 @@ export class PollingGateway
   }
 
   async handleConnection(client: AuthSocket) {
-    console.log(`Client connected: ${client.id}`);
-    const token = client.handshake.auth.token;
+    // const token = client.handshake.auth.token;
+    const token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWFlZmIzOTU2N2FhMmM1YjE5MDdiNDIiLCJ1c2VybmFtZSI6ImtpcmlsbCIsImVtYWlsIjoia2lyaWxsMTA4Ym9sQGdtYWlsLmNvbSIsImlhdCI6MTcwNjE5MDUxN30.DplMFertBScyqYxFb0I0XBGFTBDLowcYfxtabYwf3nM';
 
     try {
       const user = this.pollingService.handleConnection(token) as JwtPayload & {
@@ -52,9 +56,7 @@ export class PollingGateway
     }
   }
 
-  handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
-  }
+  handleDisconnect(client: Socket) {}
 
   @SubscribeMessage(MESSAGE_EVENTS.MESSAGE)
   handleMessage(
@@ -65,9 +67,13 @@ export class PollingGateway
     this.pollingService.handleMessage(createMessageDto, userChats);
   }
 
+  @SubscribeMessage('messageViewed')
+  handleMessageViewed(@MessageBody() seenFrom: SeenFrom) {
+    this.pollingService.handleMessageViewed(seenFrom);
+  }
+
   @SubscribeMessage(MESSAGE_EVENTS.PING)
   handlePing() {
-    console.log('ping: ');
     return {
       event: 'pong',
       data: 'pong data',

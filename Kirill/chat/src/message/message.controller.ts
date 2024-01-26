@@ -3,7 +3,6 @@ import { EventPattern } from '@nestjs/microservices';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { MESSAGE_EVENTS } from 'chat-utils';
 
 @Controller('message')
 export class MessageController {
@@ -13,6 +12,11 @@ export class MessageController {
   async handleMessage(createMessageDto: CreateMessageDto) {
     const message = await this.messageService.create(createMessageDto);
     this.messageService.handleCreatedMessage(message);
+  }
+
+  @EventPattern('messageViewed')
+  async handleMessageViewed(seenFrom: { chatId: string; messageId: string }) {
+    this.messageService.handleMessageViewed(seenFrom);
   }
 
   @Get()
