@@ -12,6 +12,7 @@ import { CreateMessageDto } from '../message/dto/create-message.dto';
 import { PollingService } from './polling.service';
 import { MESSAGE_EVENTS } from 'chat-utils';
 import { JwtPayload } from './polling.service';
+import { EVENT } from '../shared/constants';
 
 interface AuthSocket extends Socket {
   user: JwtPayload & {
@@ -34,7 +35,8 @@ export class PollingGateway
   afterInit(server: Server) {
     this.pollingService.getEvents().subscribe({
       next: ({ event, data }) => {
-        server.emit(event, data);
+        const { chatId }: any = data;
+        server.to(chatId).emit(event, data);
       },
     });
   }
@@ -48,7 +50,11 @@ export class PollingGateway
       const user = this.pollingService.handleConnection(token) as JwtPayload & {
         chats: string[];
       };
+
       const userChats = await this.pollingService.getUserChats(user.userId);
+
+      userChats.forEach((chatId: string) => client.join(chatId));
+
       user.chats = userChats;
       client.user = user;
     } catch (error) {
@@ -67,12 +73,12 @@ export class PollingGateway
     this.pollingService.handleMessage(createMessageDto, userChats);
   }
 
-  @SubscribeMessage('messageViewed')
+  @SubscribeMessage(EVENT.MESSAGE_VIEWED)
   handleMessageViewed(@MessageBody() seenFrom: SeenFrom) {
     this.pollingService.handleMessageViewed(seenFrom);
   }
 
-  @SubscribeMessage(MESSAGE_EVENTS.PING)
+  @SubscribeMessage(EVENT.PING)
   handlePing() {
     return {
       event: 'pong',

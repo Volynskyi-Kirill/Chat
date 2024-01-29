@@ -3,18 +3,18 @@ import { EventPattern } from '@nestjs/microservices';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { EVENT } from '../shared/constants';
 
 @Controller('message')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @EventPattern('incomingMessage')
-  async handleMessage(createMessageDto: CreateMessageDto) {
-    const message = await this.messageService.create(createMessageDto);
-    this.messageService.handleCreatedMessage(message);
+  @EventPattern(EVENT.MESSAGE_INCOMING)
+  handleMessage(createMessageDto: CreateMessageDto) {
+    this.messageService.create(createMessageDto);
   }
 
-  @EventPattern('messageViewed')
+  @EventPattern(EVENT.MESSAGE_VIEWED)
   async handleMessageViewed(seenFrom: { chatId: string; messageId: string }) {
     this.messageService.handleMessageViewed(seenFrom);
   }

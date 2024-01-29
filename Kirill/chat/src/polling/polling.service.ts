@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
 import { lastValueFrom } from 'rxjs';
 import { SeenFrom } from './polling.gateway';
+import { EVENT } from '../shared/constants';
 
 export interface JwtPayload {
   userId: string;
@@ -30,13 +31,14 @@ export class PollingService {
 
   handleMessage(createMessageDto: CreateMessageDto, userChats: string[]) {
     const { chatId } = createMessageDto;
+
     const isUserHaveAccess = userChats.includes(chatId);
 
     if (!isUserHaveAccess) {
       throw new ForbiddenException();
     }
 
-    this.client.emit('incomingMessage', createMessageDto);
+    this.client.emit(EVENT.MESSAGE_INCOMING, createMessageDto);
   }
 
   sendMessage(message: Message) {
@@ -44,7 +46,7 @@ export class PollingService {
   }
 
   sendMessageViewed(message: Message) {
-    this.gatewayEvents.next({ event: 'messageViewed', data: message });
+    this.gatewayEvents.next({ event: EVENT.MESSAGE_VIEWED, data: message });
   }
 
   async getUserChats(userId: string) {
@@ -53,7 +55,7 @@ export class PollingService {
   }
 
   handleMessageViewed(seenFrom: SeenFrom) {
-    this.client.emit('messageViewed', seenFrom);
+    this.client.emit(EVENT.MESSAGE_VIEWED, seenFrom);
   }
 
   handleConnection(token: string) {
