@@ -27,8 +27,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @Post('link')
   async sendLink(@Body('mail') mail: string) {
-    const user = await this.userService.findByEmail(mail);
-    const { _id, username, email } = user;
+    const { _id, username, email } = await this.userService.findByEmail(mail);
     const token = this.userService.generateToken(
       _id.toString(),
       username,

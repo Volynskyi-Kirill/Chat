@@ -5,6 +5,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { UserDBModule } from './user.db';
 import { UserDocument } from './user.schema';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { RedisModule } from '../modules/redis.module';
 import { Types } from 'mongoose';
 
 // толи я мокаю вообще?
@@ -15,8 +18,8 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [UserDBModule],
-      providers: [UserService],
+      imports: [UserDBModule, RedisModule],
+      providers: [UserService, JwtService, ConfigService],
     }).compile();
 
     service = module.get<UserService>(UserService);
@@ -27,7 +30,6 @@ describe('UserService', () => {
       _id: userId,
       email: 'email@gmail.com',
       username: 'Alex',
-      chats: <string[]>[],
     };
   }
 
@@ -39,7 +41,7 @@ describe('UserService', () => {
     const userId = new Types.ObjectId();
     const createUserDto: CreateUserDto = {
       username: 'Alex',
-      chats: [],
+      email: 'test@gmail.com',
     };
 
     jest.spyOn(service, 'create').mockImplementation(async () => {

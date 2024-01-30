@@ -9,6 +9,7 @@ import * as jwt from 'jsonwebtoken';
 import { lastValueFrom } from 'rxjs';
 import { SeenFrom } from './polling.gateway';
 import { EVENT } from '../shared/constants';
+import { MESSAGE_PATTERN } from '../shared/constants';
 
 export interface JwtPayload {
   userId: string;
@@ -50,7 +51,10 @@ export class PollingService {
   }
 
   async getUserChats(userId: string) {
-    const userChatsRequest = this.client.send({ cmd: 'getUserChats' }, userId);
+    const userChatsRequest = this.client.send(
+      { cmd: MESSAGE_PATTERN.GET_USER_CHATS },
+      userId,
+    );
     return await lastValueFrom(userChatsRequest);
   }
 

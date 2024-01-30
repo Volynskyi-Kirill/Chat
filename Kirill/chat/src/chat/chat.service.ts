@@ -3,6 +3,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { Chat } from './chat.schema';
 import { CreateChatDto } from './dto/create-chat.dto';
+import { AddUserToChatDto } from './dto/add-user-to-chat.dto';
 
 @Injectable()
 export class ChatService {
@@ -14,6 +15,18 @@ export class ChatService {
   }
   create(createChatDto: CreateChatDto) {
     return this.chatModel.create(createChatDto);
+  }
+
+  addUserToChat({ chatId, userId }: AddUserToChatDto) {
+    return this.chatModel.findByIdAndUpdate(chatId, {
+      $addToSet: { users: userId },
+    });
+  }
+
+  deleteUserFromChat(chatId: string, userId: string) {
+    return this.chatModel.findByIdAndUpdate(chatId, {
+      $pull: { users: userId },
+    });
   }
 
   getUserChats(userId: string) {

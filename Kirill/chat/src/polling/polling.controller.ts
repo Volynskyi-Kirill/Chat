@@ -13,7 +13,7 @@ export class PollingController {
     this.pollingService.sendMessage(message);
   }
 
-  @EventPattern('updateMessageViewed')
+  @EventPattern(EVENT.MESSAGE_SEEN_AT_UPDATED)
   handleMessageViewed(message: Message) {
     this.pollingService.sendMessageViewed(message);
   }

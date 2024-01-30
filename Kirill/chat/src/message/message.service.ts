@@ -35,7 +35,7 @@ export class MessageService {
       },
       { new: true },
     );
-    this.client.emit('updateMessageViewed', message);
+    this.client.emit(EVENT.MESSAGE_SEEN_AT_UPDATED, message);
   }
 
   findAll() {

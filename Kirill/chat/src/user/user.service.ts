@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { ClientProxy } from '@nestjs/microservices';
+import { EVENT } from '../shared/constants';
 
 export const ERROR_MESSAGE = {
   USER_NOT_FOUND: 'such user does not exist',
@@ -71,6 +72,6 @@ export class UserService {
   }
 
   async sendLink({ email, html, subject }: ISendMessage) {
-    this.client.emit('linkCreated', { email, html, subject });
+    this.client.emit(EVENT.LINK_CREATED, { email, html, subject });
   }
 }

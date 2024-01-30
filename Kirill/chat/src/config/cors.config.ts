@@ -1,5 +1,5 @@
 export const CorsConfig = {
-  origin: 'http://localhost:3001/',
+  origin: '*',
   methods: 'GET,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type'],
 };

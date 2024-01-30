@@ -10,7 +10,6 @@ import { Server, Socket } from 'socket.io';
 import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 import { CreateMessageDto } from '../message/dto/create-message.dto';
 import { PollingService } from './polling.service';
-import { MESSAGE_EVENTS } from 'chat-utils';
 import { JwtPayload } from './polling.service';
 import { EVENT } from '../shared/constants';
 
@@ -42,9 +41,7 @@ export class PollingGateway
   }
 
   async handleConnection(client: AuthSocket) {
-    // const token = client.handshake.auth.token;
-    const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWFlZmIzOTU2N2FhMmM1YjE5MDdiNDIiLCJ1c2VybmFtZSI6ImtpcmlsbCIsImVtYWlsIjoia2lyaWxsMTA4Ym9sQGdtYWlsLmNvbSIsImlhdCI6MTcwNjE5MDUxN30.DplMFertBScyqYxFb0I0XBGFTBDLowcYfxtabYwf3nM';
+    const token = client.handshake.auth.token;
 
     try {
       const user = this.pollingService.handleConnection(token) as JwtPayload & {
@@ -64,7 +61,7 @@ export class PollingGateway
 
   handleDisconnect(client: Socket) {}
 
-  @SubscribeMessage(MESSAGE_EVENTS.MESSAGE)
+  @SubscribeMessage(EVENT.MESSAGE)
   handleMessage(
     @ConnectedSocket() client: AuthSocket,
     @MessageBody() createMessageDto: CreateMessageDto,
