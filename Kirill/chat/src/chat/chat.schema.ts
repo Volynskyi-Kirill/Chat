@@ -9,6 +9,8 @@ export class Chat {
   users: string[];
   @Prop({ required: true })
   name: string;
+  @Prop({ required: true })
+  createdBy: string;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);

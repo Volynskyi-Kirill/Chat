@@ -10,6 +10,7 @@ import { lastValueFrom } from 'rxjs';
 import { SeenFrom } from './polling.gateway';
 import { EVENT } from '../shared/constants';
 import { MESSAGE_PATTERN } from '../shared/constants';
+import { ChatUserDto } from '../shared/dto/chat-user.dto';
 
 export interface JwtPayload {
   userId: string;
@@ -43,7 +44,7 @@ export class PollingService {
   }
 
   sendMessage(message: Message) {
-    this.gatewayEvents.next({ event: 'message', data: message });
+    this.gatewayEvents.next({ event: EVENT.MESSAGE, data: message });
   }
 
   sendMessageViewed(message: Message) {
@@ -66,5 +67,19 @@ export class PollingService {
     const secret = this.configService.get<string>('JWT_SECRET')!;
     const payload = jwt.verify(token, secret) as JwtPayload;
     return payload;
+  }
+
+  handleUserAddedToChat({ chatId, userId }: ChatUserDto) {
+    this.gatewayEvents.next({
+      event: EVENT.USER_ADDED_TO_CHAT,
+      data: { chatId, userId },
+    });
+  }
+
+  handleUserRemovedFromChat({ chatId, userId }: ChatUserDto) {
+    this.gatewayEvents.next({
+      event: EVENT.USER_REMOVED_FROM_CHAT,
+      data: { chatId, userId },
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class AddUserToChatDto {
+export class ChatUserDto {
   @ApiProperty()
   chatId: string;
   @ApiProperty()

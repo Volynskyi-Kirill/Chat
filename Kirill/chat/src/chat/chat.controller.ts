@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Param, Get, Post } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { AddUserToChatDto } from './dto/add-user-to-chat.dto';
 import { MESSAGE_PATTERN } from '../shared/constants';
+import { ChatUserDto } from '../shared/dto/chat-user.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -11,7 +11,7 @@ export class ChatController {
 
   @MessagePattern({ cmd: MESSAGE_PATTERN.GET_USER_CHATS })
   async handleGetUserChats(userId: string) {
-    return await this.chatService.getUserChats(userId);
+    return await this.chatService.getIdUserChats(userId);
   }
 
   @Get(':userId')
@@ -25,8 +25,15 @@ export class ChatController {
   }
 
   @Post('/user')
-  async addUserToChat(@Body() addUserToChatDto: AddUserToChatDto) {
+  async addUserToChat(@Body() addUserToChatDto: ChatUserDto) {
     return await this.chatService.addUserToChat(addUserToChatDto);
+  }
+
+  // удалить чат может только его создатель
+  // либо проверка либо гвард на совпадение user._id и chat.createdBy
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.chatService.remove(id);
   }
 
   @Delete('/user/:chatId/:userId')

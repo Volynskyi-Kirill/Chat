@@ -5,6 +5,8 @@ export const EVENT = {
   MESSAGE_SEEN_AT_UPDATED: 'message seen at updated',
   MESSAGE_INCOMING: 'message incoming',
   LINK_CREATED: 'link created',
+  USER_ADDED_TO_CHAT: 'user added to chat',
+  USER_REMOVED_FROM_CHAT: 'user removed from chat',
   PING: 'ping',
 };
 
