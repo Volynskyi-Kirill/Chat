@@ -7,6 +7,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { Message } from './message.schema';
 import { EVENT } from '../shared/constants';
+import { MESSAGE_PATTERN } from '../shared/constants';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class MessageService {
@@ -42,7 +44,7 @@ export class MessageService {
     return this.messageModel.find();
   }
 
-  findOne(id: string) {
+  findById(id: string) {
     return this.messageModel.findById(id);
   }
 
@@ -51,6 +53,15 @@ export class MessageService {
   }
 
   remove(id: string) {
-    return this.messageModel.findByIdAndDelete(id);
+    console.log('will be delete message with id: ', id);
+    // return this.messageModel.findByIdAndDelete(id);
+  }
+
+  async getChatById(chatId: string) {
+    const chatRequest = this.client.send(
+      { cmd: MESSAGE_PATTERN.GET_CHAT_BY_ID },
+      chatId,
+    );
+    return await lastValueFrom(chatRequest);
   }
 }

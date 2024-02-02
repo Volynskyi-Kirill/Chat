@@ -1,12 +1,24 @@
-import { Body, Controller, Delete, Param, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Get,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { MESSAGE_PATTERN } from '../shared/constants';
 import { ChatUserDto } from '../shared/dto/chat-user.dto';
 import { ChatOwner } from './decorators/chatOwner.decorator';
+import { ChatOwnerGuard } from './guards/chatOwner.guard';
+import { JwtGuard } from '../shared/guards/jwt.guard';
 
 @Controller('chat')
+@UseGuards(ChatOwnerGuard)
+@UseGuards(JwtGuard)
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
@@ -15,9 +27,10 @@ export class ChatController {
     return await this.chatService.getIdUserChats(userId);
   }
 
-  @Get(':userId')
-  async getUserChats(@Param('userId') userId: string) {
-    return await this.chatService.getUserChats(userId);
+  @MessagePattern({ cmd: MESSAGE_PATTERN.GET_CHAT_BY_ID })
+  async handleGetChatById(chatId: string) {
+    console.log('MessagePattern: ');
+    return await this.chatService.findById(chatId);
   }
 
   @Post()
@@ -26,15 +39,20 @@ export class ChatController {
   }
 
   @ChatOwner()
-  @Post('/user')
-  async addUserToChat(@Body() addUserToChatDto: ChatUserDto) {
-    return await this.chatService.addUserToChat(addUserToChatDto);
-  }
-
-  @ChatOwner()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.chatService.remove(id);
+  }
+
+  @Get('/user/:userId')
+  async getUserChats(@Param('userId') userId: string) {
+    return await this.chatService.getUserChats(userId);
+  }
+
+  @ChatOwner()
+  @Post('/user')
+  async addUserToChat(@Body() addUserToChatDto: ChatUserDto) {
+    return await this.chatService.addUserToChat(addUserToChatDto);
   }
 
   @ChatOwner()
