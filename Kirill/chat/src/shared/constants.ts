@@ -13,3 +13,8 @@ export const EVENT = {
 export const MESSAGE_PATTERN = {
   GET_USER_CHATS: 'getUserChats',
 };
+
+export const ACTION = {
+  ADD: 'add',
+  REMOVE: 'remove',
+};

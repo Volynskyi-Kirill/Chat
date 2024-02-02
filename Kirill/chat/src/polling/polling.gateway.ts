@@ -11,7 +11,7 @@ import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 import { CreateMessageDto } from '../message/dto/create-message.dto';
 import { PollingService } from './polling.service';
 import { JwtPayload } from './polling.service';
-import { EVENT } from '../shared/constants';
+import { EVENT, ACTION } from '../shared/constants';
 
 export interface AuthSocket extends Socket {
   user: JwtPayload & {
@@ -34,28 +34,39 @@ export class PollingGateway
   afterInit(server: Server) {
     this.pollingService.getEvents().subscribe({
       next: ({ event, data }: { event: string; data: any }) => {
-        const { chatId } = data;
+        const { chatId, userId } = data;
 
-        if (event === EVENT.USER_ADDED_TO_CHAT) {
+        const handleUserEvent = (action: string) => {
           const clients = this.server.sockets.sockets;
+
           clients.forEach((client: AuthSocket) => {
-            if (client.user.userId === data.userId) {
-              client.join(chatId);
-              client.user.chats.push(chatId);
+            const isUserSocket = client.user.userId === userId;
+            if (isUserSocket) {
+              switch (action) {
+                case ACTION.ADD:
+                  client.join(chatId);
+                  client.user.chats = [...client.user.chats, chatId];
+                  break;
+                case ACTION.REMOVE:
+                  client.leave(chatId);
+                  client.user.chats = client.user.chats.filter(
+                    (chat) => chat !== chatId,
+                  );
+                  break;
+              }
             }
           });
-        }
-        if (event === EVENT.USER_REMOVED_FROM_CHAT) {
-          server.to(chatId).emit(event, data);
-          const clients = this.server.sockets.sockets;
-          clients.forEach((client: AuthSocket) => {
-            if (client.user.userId === data.userId) {
-              client.leave(chatId);
-              client.user.chats = client.user.chats.filter(
-                (chat) => chat !== chatId,
-              );
-            }
-          });
+        };
+
+        switch (event) {
+          case EVENT.USER_ADDED_TO_CHAT:
+            handleUserEvent(ACTION.ADD);
+            break;
+
+          case EVENT.USER_REMOVED_FROM_CHAT:
+            server.to(chatId).emit(event, data);
+            handleUserEvent(ACTION.REMOVE);
+            break;
         }
 
         server.to(chatId).emit(event, data);
