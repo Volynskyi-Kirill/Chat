@@ -19,8 +19,8 @@ export class UserController {
 
   @Post('/registration')
   async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.create(createUserDto);
-    const { _id, username, email } = user;
+    const { _id, username, email } =
+      await this.userService.create(createUserDto);
     return this.userService.generateToken(_id.toString(), username, email);
   }
 

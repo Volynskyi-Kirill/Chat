@@ -17,8 +17,13 @@ export class ChatService {
   ) {
     this.chatModel = this.connection.model(Chat.name);
   }
+
   create(createChatDto: CreateChatDto) {
     return this.chatModel.create(createChatDto);
+  }
+
+  async findById(id: string) {
+    return await this.chatModel.findById(id);
   }
 
   remove(chatId: string) {
