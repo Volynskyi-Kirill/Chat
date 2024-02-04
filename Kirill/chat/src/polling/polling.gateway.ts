@@ -89,7 +89,6 @@ export class PollingGateway
       user.chats = userChats;
       client.user = user;
     } catch (error) {
-      console.log(' client.disconnect');
       client.disconnect(true);
     }
   }

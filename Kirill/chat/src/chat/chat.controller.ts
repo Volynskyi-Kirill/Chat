@@ -15,6 +15,7 @@ import { ChatUserDto } from '../shared/dto/chat-user.dto';
 import { ChatOwner } from './decorators/chatOwner.decorator';
 import { ChatOwnerGuard } from './guards/chatOwner.guard';
 import { JwtGuard } from '../shared/guards/jwt.guard';
+import { Public } from '../shared/decorators/public.decorator';
 
 @Controller('chat')
 @UseGuards(ChatOwnerGuard)
@@ -22,14 +23,15 @@ import { JwtGuard } from '../shared/guards/jwt.guard';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
+  @Public()
   @MessagePattern({ cmd: MESSAGE_PATTERN.GET_USER_CHATS })
   async handleGetUserChats(userId: string) {
     return await this.chatService.getIdUserChats(userId);
   }
 
+  @Public()
   @MessagePattern({ cmd: MESSAGE_PATTERN.GET_CHAT_BY_ID })
   async handleGetChatById(chatId: string) {
-    console.log('MessagePattern: ');
     return await this.chatService.findById(chatId);
   }
 
@@ -49,7 +51,8 @@ export class ChatController {
     return await this.chatService.getUserChats(userId);
   }
 
-  @ChatOwner()
+  // в гварде нужны параметры а не бади
+  // @ChatOwner()
   @Post('/user')
   async addUserToChat(@Body() addUserToChatDto: ChatUserDto) {
     return await this.chatService.addUserToChat(addUserToChatDto);

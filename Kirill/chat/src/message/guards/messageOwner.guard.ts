@@ -5,11 +5,11 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IS_CHAT_OWNER_KEY } from '../decorators/chatOwner.decorator';
+import { IS_MESSAGE_OWNER_KEY } from '../decorators/messageOwner.decorator';
 import { MessageService } from '../message.service';
 
 @Injectable()
-export class ChatOwnerGuard implements CanActivate {
+export class MessageOwnerGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private messageService: MessageService,
@@ -17,7 +17,7 @@ export class ChatOwnerGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const isOwnerRequired = this.reflector.get<boolean>(
-      IS_CHAT_OWNER_KEY,
+      IS_MESSAGE_OWNER_KEY,
       context.getHandler(),
     );
 
@@ -28,14 +28,13 @@ export class ChatOwnerGuard implements CanActivate {
     const { user } = context.switchToHttp().getRequest();
     const params = context.switchToHttp().getRequest().params;
 
-    const userId = user.userId;
+    const userIdFromRequest = user.userId;
     const messageId = params.id;
-    const { chatId } = await this.messageService.findById(messageId);
-    const { createdBy } = await this.messageService.getChatById(chatId);
+    const { userId } = await this.messageService.findById(messageId);
 
-    const isUserChatOwner = createdBy === userId;
+    const isUserMessageOwner = userId === userIdFromRequest;
 
-    if (!isUserChatOwner) {
+    if (!isUserMessageOwner) {
       throw new ForbiddenException();
     }
     return true;

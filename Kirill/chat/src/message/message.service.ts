@@ -62,6 +62,7 @@ export class MessageService {
       { cmd: MESSAGE_PATTERN.GET_CHAT_BY_ID },
       chatId,
     );
+
     return await lastValueFrom(chatRequest);
   }
 }

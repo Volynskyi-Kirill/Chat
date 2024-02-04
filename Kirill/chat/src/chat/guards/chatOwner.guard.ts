@@ -26,10 +26,9 @@ export class ChatOwnerGuard implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
-    const { params } = context.getArgByIndex(0);
+    const { chatId } = context.switchToHttp().getRequest().params;
 
     const userId = user.userId;
-    const chatId = params.id;
     const { createdBy } = await this.chatService.findById(chatId);
     const isUserChatOwner = createdBy === userId;
 
