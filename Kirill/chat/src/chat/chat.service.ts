@@ -64,4 +64,24 @@ export class ChatService {
       .select('_id')
       .then((chats) => chats.map((chat) => chat._id.toString()));
   }
+
+  async addAdminToChat(chatId: string, userId: string) {
+    return await this.chatModel.findByIdAndUpdate(
+      chatId,
+      {
+        $addToSet: { admins: userId },
+      },
+      { new: true },
+    );
+  }
+
+  async deleteAdminFromChat(chatId: string, userId: string) {
+    return await this.chatModel.findByIdAndUpdate(
+      chatId,
+      {
+        $pull: { admins: userId },
+      },
+      { new: true },
+    );
+  }
 }

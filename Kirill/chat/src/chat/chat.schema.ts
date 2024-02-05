@@ -7,6 +7,8 @@ export type ChatDocument = HydratedDocument<Chat>;
 export class Chat {
   @Prop()
   users: string[];
+  @Prop()
+  admins: string[];
   @Prop({ required: true })
   name: string;
   @Prop({ required: true })

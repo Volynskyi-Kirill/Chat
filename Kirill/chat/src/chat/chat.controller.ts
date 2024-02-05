@@ -66,4 +66,24 @@ export class ChatController {
   ) {
     return await this.chatService.deleteUserFromChat(chatId, userId);
   }
+
+  @Post(':chatId/admin')
+  addAdminToChat(
+    @Param('chatId') chatId: string,
+    @Body('userId') userId: string,
+  ) {
+    console.log('userId: ', userId);
+    console.log('chatId: ', chatId);
+    // return this.chatService.addAdminToChat(chatId, userId);
+  }
+
+  @Delete(':chatId/admin/:userId')
+  deleteAdminFromChat(
+    @Param('chatId') chatId: string,
+    @Param() userId: string,
+  ) {
+    console.log('userId: ', userId);
+    console.log('chatId: ', chatId);
+    // return this.chatService.deleteAdminFromChat(chatId, userId);
+  }
 }
