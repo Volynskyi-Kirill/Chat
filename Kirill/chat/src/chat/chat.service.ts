@@ -65,6 +65,13 @@ export class ChatService {
       .then((chats) => chats.map((chat) => chat._id.toString()));
   }
 
+  getChatAdmins(chatId: string) {
+    return this.chatModel
+      .findById(chatId)
+      .select('admins')
+      .then((result) => result.admins);
+  }
+
   async addAdminToChat(chatId: string, userId: string) {
     return await this.chatModel.findByIdAndUpdate(
       chatId,

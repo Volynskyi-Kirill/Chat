@@ -5,14 +5,14 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IS_CHAT_OWNER_KEY } from '../decorators/chatOwner.decorator';
-import { MessageService } from '../message.service';
+import { IS_CHAT_OWNER_KEY } from '../../decorators/chatOwner.decorator';
+import { ChatService } from '../../chat.service';
 
 @Injectable()
 export class ChatOwnerGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private messageService: MessageService,
+    private chatService: ChatService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -26,13 +26,12 @@ export class ChatOwnerGuard implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
-    const params = context.switchToHttp().getRequest().params;
+    const chatId =
+      context.switchToHttp().getRequest().params.chatId ??
+      context.switchToHttp().getRequest().body.chatId;
 
     const userId = user.userId;
-    const messageId = params.id;
-    const { chatId } = await this.messageService.findById(messageId);
-    const { createdBy } = await this.messageService.getChatById(chatId);
-
+    const { createdBy } = await this.chatService.findById(chatId);
     const isUserChatOwner = createdBy === userId;
 
     if (!isUserChatOwner) {

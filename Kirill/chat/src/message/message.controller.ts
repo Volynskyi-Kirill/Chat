@@ -12,21 +12,13 @@ import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { EVENT } from '../shared/constants';
-import { ChatOwner } from './decorators/chatOwner.decorator';
-import { ChatOwnerGuard } from './guards/chatOwner.guard';
-import { MessageOwner } from './decorators/messageOwner.decorator';
-import { MessageOwnerGuard } from './guards/messageOwner.guard';
-import { ChatOwnerOrMessageOwnerGuard } from './guards/chatOwnerOrMessageOwner.guard';
-import { ChatOwnerOrMessageOwner } from './decorators/chatOwnerOrMessageOwner.decorator';
+import { canDeleteMessageGuard } from './guards/canDeleteMessage.guard';
+import { canDeleteMessage } from './decorators/canDeleteMessage.decorator';
 import { JwtGuard } from '../shared/guards/jwt.guard';
 import { Public } from '../shared/decorators/public.decorator';
 
-// ChatOwnerOrMessageOwnerGuard - нейминг ок? И то, что он заменяет два гварда?
-
 @Controller('message')
-// @UseGuards(ChatOwnerGuard)
-// @UseGuards(MessageOwnerGuard)
-@UseGuards(ChatOwnerOrMessageOwnerGuard)
+@UseGuards(canDeleteMessageGuard)
 @UseGuards(JwtGuard)
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
@@ -58,9 +50,7 @@ export class MessageController {
     return this.messageService.update(id, updateMessageDto);
   }
 
-  // @ChatOwner()
-  // @MessageOwner()
-  @ChatOwnerOrMessageOwner()
+  @canDeleteMessage()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.messageService.remove(id);

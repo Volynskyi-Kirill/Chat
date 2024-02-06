@@ -13,12 +13,15 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { MESSAGE_PATTERN } from '../shared/constants';
 import { ChatUserDto } from '../shared/dto/chat-user.dto';
 import { ChatOwner } from './decorators/chatOwner.decorator';
-import { ChatOwnerGuard } from './guards/chatOwner.guard';
+import { ChatOwnerGuard } from './guards/chatOwner/chatOwner.guard';
+import { CanMangeUsersGuard } from './guards/canManageUsers/canMangeUsers.guard';
+import { CanManageUsers } from './decorators/canManageUsers.decorator';
 import { JwtGuard } from '../shared/guards/jwt.guard';
 import { Public } from '../shared/decorators/public.decorator';
 
 @Controller('chat')
 @UseGuards(ChatOwnerGuard)
+@UseGuards(CanMangeUsersGuard)
 @UseGuards(JwtGuard)
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
@@ -51,14 +54,13 @@ export class ChatController {
     return await this.chatService.getUserChats(userId);
   }
 
-  // в гварде нужны параметры а не бади
-  // @ChatOwner()
+  @CanManageUsers()
   @Post('/user')
   async addUserToChat(@Body() addUserToChatDto: ChatUserDto) {
     return await this.chatService.addUserToChat(addUserToChatDto);
   }
 
-  @ChatOwner()
+  @CanManageUsers()
   @Delete('/user/:chatId/:userId')
   async deleteUserFromChat(
     @Param('chatId') chatId: string,
@@ -67,23 +69,21 @@ export class ChatController {
     return await this.chatService.deleteUserFromChat(chatId, userId);
   }
 
+  @ChatOwner()
   @Post(':chatId/admin')
   addAdminToChat(
     @Param('chatId') chatId: string,
     @Body('userId') userId: string,
   ) {
-    console.log('userId: ', userId);
-    console.log('chatId: ', chatId);
-    // return this.chatService.addAdminToChat(chatId, userId);
+    return this.chatService.addAdminToChat(chatId, userId);
   }
 
+  @ChatOwner()
   @Delete(':chatId/admin/:userId')
   deleteAdminFromChat(
     @Param('chatId') chatId: string,
-    @Param() userId: string,
+    @Param('userId') userId: string,
   ) {
-    console.log('userId: ', userId);
-    console.log('chatId: ', chatId);
-    // return this.chatService.deleteAdminFromChat(chatId, userId);
+    return this.chatService.deleteAdminFromChat(chatId, userId);
   }
 }
