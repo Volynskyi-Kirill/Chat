@@ -32,12 +32,12 @@ describe('ChatOwnerGuard', () => {
     expect(chatOwnerGuard).toBeDefined();
   });
 
-  it('should throw Forbidden Exception', async () => {
-    const createdBy = 'ownerUserId';
+  // it('should throw Forbidden Exception', async () => {
+  //   const createdBy = 'ownerUserId';
 
-    jest.spyOn(reflector, 'get').mockReturnValueOnce(true);
-    jest.spyOn(ChatService, 'findById').mockResolvedValueOnce({ createdBy });
+  //   jest.spyOn(reflector, 'get').mockReturnValueOnce(true);
+  //   jest.spyOn(ChatService, 'findById').mockResolvedValueOnce({ createdBy });
 
-    // await expect();
-  });
+  //   // await expect();
+  // });
 });

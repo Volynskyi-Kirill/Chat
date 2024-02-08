@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { Chat } from './chat.schema';
+import { Chat, ChatDocument } from './chat.schema';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatUserDto } from '../shared/dto/chat-user.dto';
 import { REDIS_SERVICE } from '../modules/redis.module';
@@ -15,7 +15,7 @@ export class ChatService {
     @InjectConnection('chat') private readonly connection: Connection,
     @Inject(REDIS_SERVICE) private client: ClientProxy,
   ) {
-    this.chatModel = this.connection.model(Chat.name);
+    this.chatModel = this.connection.model<ChatDocument>(Chat.name);
   }
 
   create(createChatDto: CreateChatDto) {
