@@ -9,6 +9,7 @@ import { Message } from './message.schema';
 import { EVENT } from '../shared/constants';
 import { MESSAGE_PATTERN } from '../shared/constants';
 import { lastValueFrom } from 'rxjs';
+import { MessageDocument } from './message.schema';
 
 @Injectable()
 export class MessageService {

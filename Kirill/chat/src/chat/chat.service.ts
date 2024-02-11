@@ -23,7 +23,7 @@ export class ChatService {
   }
 
   async findById(id: string) {
-    return await this.chatModel.findById(id);
+    return (await this.chatModel.findById(id)) as ChatDocument;
   }
 
   remove(chatId: string) {
@@ -69,7 +69,7 @@ export class ChatService {
     return this.chatModel
       .findById(chatId)
       .select('admins')
-      .then((result) => result.admins);
+      .then((result) => result?.admins);
   }
 
   async addAdminToChat(chatId: string, userId: string) {
