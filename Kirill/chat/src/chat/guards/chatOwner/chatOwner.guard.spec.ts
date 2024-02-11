@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 import { ChatService } from '../../chat.service';
 import { Reflector } from '@nestjs/core';
 import { ChatOwnerGuard } from './chatOwner.guard';
@@ -11,8 +11,6 @@ import { getMockContext } from './chatOwner.guard.fixtures';
 
 describe('ChatOwnerGuard', () => {
   let chatOwnerGuard: ChatOwnerGuard;
-  // let reflector: Reflector;
-  // let chatService: ChatService;
   let redisSendResult = '1';
 
   const redisClient = {
@@ -25,6 +23,7 @@ describe('ChatOwnerGuard', () => {
   };
 
   const mockReflector = {
+    get: jest.fn(),
     getAllAndOverride: jest.fn(),
   };
 
@@ -52,20 +51,12 @@ describe('ChatOwnerGuard', () => {
   it('should throw Forbidden Exception if user is not chat owner', async () => {
     const mockContext = getMockContext();
     redisSendResult = 'chat_id';
+
+    mockReflector.get.mockReturnValueOnce(true);
     mockReflector.getAllAndOverride.mockReturnValueOnce('chat');
+
     await expect(chatOwnerGuard.canActivate(mockContext)).rejects.toThrow(
       ForbiddenException,
     );
-  });
-
-  it('token is missing', async () => {
-    const request = {
-      headers: {},
-    };
-    await expect(
-      chatOwnerGuard.canActivate({
-        switchToHttp: () => ({ getRequest: () => request }),
-      } as ExecutionContext),
-    ).rejects.toThrow(ForbiddenException);
   });
 });

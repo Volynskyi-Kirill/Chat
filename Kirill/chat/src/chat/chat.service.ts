@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { Chat, ChatDocument } from './chat.schema';
@@ -10,7 +10,7 @@ import { EVENT } from '../shared/constants';
 
 @Injectable()
 export class ChatService {
-  private chatModel;
+  private readonly chatModel;
   constructor(
     @InjectConnection('chat') private readonly connection: Connection,
     @Inject(REDIS_SERVICE) private client: ClientProxy,
@@ -23,7 +23,11 @@ export class ChatService {
   }
 
   async findById(id: string) {
-    return (await this.chatModel.findById(id)) as ChatDocument;
+    const chat = await this.chatModel.findById(id);
+    if (!chat) {
+      throw new NotFoundException();
+    }
+    return chat;
   }
 
   remove(chatId: string) {
