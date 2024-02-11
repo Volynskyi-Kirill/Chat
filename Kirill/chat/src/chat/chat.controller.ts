@@ -54,6 +54,11 @@ export class ChatController {
     return await this.chatService.getUserChats(userId);
   }
 
+  @Get(':chatId/history')
+  async getChatHistory(@Param('chatId') chatId: string) {
+    return await this.chatService.getChatHistory(chatId);
+  }
+
   @CanManageUsers()
   @Post('/user')
   async addUserToChat(@Body() addUserToChatDto: ChatUserDto) {

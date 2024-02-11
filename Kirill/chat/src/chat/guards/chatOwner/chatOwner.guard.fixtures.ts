@@ -1,11 +1,12 @@
 import { ExecutionContext } from '@nestjs/common';
 
-export function getMockContext() {
+export function getMockContext(chatId: string) {
   return {
     switchToHttp: () => ({
       getRequest: () => ({
-        user: {},
-        params: {},
+        user: {userId: 'ownerId'},
+        params: { chatId },
+        body: {},
       }),
       getResponse: jest.fn(),
       getNext: jest.fn(),
