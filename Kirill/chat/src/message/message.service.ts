@@ -9,7 +9,6 @@ import { Message } from './message.schema';
 import { EVENT } from '../shared/constants';
 import { MESSAGE_PATTERN } from '../shared/constants';
 import { lastValueFrom } from 'rxjs';
-import { MessageDocument } from './message.schema';
 
 @Injectable()
 export class MessageService {
@@ -54,8 +53,7 @@ export class MessageService {
   }
 
   remove(id: string) {
-    console.log('will be delete message with id: ', id);
-    // return this.messageModel.findByIdAndDelete(id);
+    return this.messageModel.findByIdAndDelete(id);
   }
 
   async getChatById(chatId: string) {
@@ -65,5 +63,13 @@ export class MessageService {
     );
 
     return await lastValueFrom(chatRequest);
+  }
+
+  getChatHistory(chatId: string) {
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    return this.messageModel.find({
+      chatId,
+      createdAt: { $gte: twentyFourHoursAgo },
+    });
   }
 }

@@ -6,7 +6,7 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatUserDto } from '../shared/dto/chat-user.dto';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { ClientProxy } from '@nestjs/microservices';
-import { EVENT } from '../shared/constants';
+import { EVENT, MESSAGE_PATTERN } from '../shared/constants';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
@@ -77,12 +77,12 @@ export class ChatService {
       .then((result) => result?.admins);
   }
 
-  getChatHistory(chatId: string) {
-    // const chatRequest = this.client.send(
-    //   { cmd: MESSAGE_PATTERN.GET_CHAT_BY_ID },
-    //   chatId,
-    // );
-    // return await lastValueFrom(chatRequest);
+  async getChatHistory(chatId: string) {
+    const chatHistoryRequest = this.client.send(
+      { cmd: MESSAGE_PATTERN.GET_CHAT_HISTORY },
+      chatId,
+    );
+    return await lastValueFrom(chatHistoryRequest);
   }
 
   async addAdminToChat(chatId: string, userId: string) {

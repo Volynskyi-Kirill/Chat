@@ -13,6 +13,7 @@ export const EVENT = {
 export const MESSAGE_PATTERN = {
   GET_USER_CHATS: 'getUserChats',
   GET_CHAT_BY_ID: 'getChatById',
+  GET_CHAT_HISTORY: 'getChatHistory',
 };
 
 export const ACTION = {

@@ -18,8 +18,11 @@ import { CanMangeUsersGuard } from './guards/canManageUsers/canMangeUsers.guard'
 import { CanManageUsers } from './decorators/canManageUsers.decorator';
 import { JwtGuard } from '../shared/guards/jwt.guard';
 import { Public } from '../shared/decorators/public.decorator';
+import { ChatMember } from './decorators/chatMember.decorator';
+import { ChatMemberGuard } from './guards/chatMember/chatMember.guard';
 
 @Controller('chat')
+@UseGuards(ChatMemberGuard)
 @UseGuards(ChatOwnerGuard)
 @UseGuards(CanMangeUsersGuard)
 @UseGuards(JwtGuard)
@@ -54,6 +57,7 @@ export class ChatController {
     return await this.chatService.getUserChats(userId);
   }
 
+  @ChatMember()
   @Get(':chatId/history')
   async getChatHistory(@Param('chatId') chatId: string) {
     return await this.chatService.getChatHistory(chatId);

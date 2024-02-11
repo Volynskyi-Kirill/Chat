@@ -34,7 +34,7 @@ export class CanMangeUsersGuard implements CanActivate {
     const { createdBy } = await this.chatService.findById(chatId);
     const admins = await this.chatService.getChatAdmins(chatId);
 
-    const isUserChatAdmin = admins.includes(userId);
+    const isUserChatAdmin = admins?.includes(userId);
     const isUserChatOwner = createdBy === userId;
 
     if (!isUserChatOwner && !isUserChatAdmin) {

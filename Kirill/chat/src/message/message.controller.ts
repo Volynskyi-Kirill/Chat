@@ -11,11 +11,12 @@ import { EventPattern } from '@nestjs/microservices';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { EVENT } from '../shared/constants';
+import { EVENT, MESSAGE_PATTERN } from '../shared/constants';
 import { canDeleteMessageGuard } from './guards/canDeleteMessage.guard';
 import { canDeleteMessage } from './decorators/canDeleteMessage.decorator';
 import { JwtGuard } from '../shared/guards/jwt.guard';
 import { Public } from '../shared/decorators/public.decorator';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller('message')
 @UseGuards(canDeleteMessageGuard)
@@ -33,6 +34,12 @@ export class MessageController {
   @EventPattern(EVENT.MESSAGE_VIEWED)
   async handleMessageViewed(seenFrom: { chatId: string; messageId: string }) {
     this.messageService.handleMessageViewed(seenFrom);
+  }
+
+  @Public()
+  @MessagePattern({ cmd: MESSAGE_PATTERN.GET_CHAT_HISTORY })
+  async handleGetChatHistory(chatId: string) {
+    return await this.messageService.getChatHistory(chatId);
   }
 
   @Get()
