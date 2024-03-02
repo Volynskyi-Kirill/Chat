@@ -4,6 +4,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { swaggerConfig } from './shared/config/swagger.config';
 import { CorsConfig } from './shared/config/cors.config';
 import { connectMicroserviceConfig } from './shared/config/connect-microservice.config';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('/docs', app, document);
 
+  app.useGlobalPipes(new ValidationPipe());
   await app.startAllMicroservices();
   await app.listen(3000);
 }

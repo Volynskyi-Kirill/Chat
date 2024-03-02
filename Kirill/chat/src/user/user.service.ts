@@ -9,10 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { ClientProxy } from '@nestjs/microservices';
 import { EVENT } from '../shared/constants';
-
-export const ERROR_MESSAGE = {
-  USER_NOT_FOUND: 'such user does not exist',
-};
+import { ERROR_MESSAGE } from './utils/constants';
 
 interface ISendMessage {
   email: string;
@@ -53,8 +50,8 @@ export class UserService {
     return user;
   }
 
-  async findOne(id: string) {
-    return await this.userModel.findById(id);
+  findOne(id: string) {
+    return this.userModel.findById(id);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

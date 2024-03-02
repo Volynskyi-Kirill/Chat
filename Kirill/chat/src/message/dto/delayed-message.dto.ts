@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsDate } from 'class-validator';
+import { IsString, IsNotEmpty, IsDate } from 'class-validator';
 
-export class CreateMessageDto {
+export class DelayedMessageDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
@@ -17,7 +17,7 @@ export class CreateMessageDto {
   @ApiProperty()
   text: string;
 
-  @IsOptional()
   @IsDate()
-  timeToSend?: Date;
+  @IsNotEmpty()
+  timeToSend: Date;
 }

@@ -11,7 +11,7 @@ export class Message {
   @Prop({ required: true })
   chatId: string;
 
-  @Prop({ default: Date.now() })
+  @Prop({ default: Date.now })
   createdAt: Date;
 
   @Prop({ required: true })

@@ -1,6 +1,7 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateMessageDto } from '../message/dto/create-message.dto';
+import { DelayedMessageDto } from '../message/dto/delayed-message.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { REDIS_SERVICE } from '../modules/redis.module';
 import { Message } from '../message/message.schema';
@@ -11,6 +12,7 @@ import { SeenFrom } from './polling.gateway';
 import { EVENT } from '../shared/constants';
 import { MESSAGE_PATTERN } from '../shared/constants';
 import { ChatUserDto } from '../shared/dto/chat-user.dto';
+import * as schedule from 'node-schedule';
 
 export interface JwtPayload {
   userId: string;
@@ -41,6 +43,17 @@ export class PollingService {
     }
 
     this.client.emit(EVENT.MESSAGE_INCOMING, createMessageDto);
+  }
+
+  handleMessageDelayed(
+    delayedMessageDto: DelayedMessageDto,
+    userChats: string[],
+  ) {
+    const timeToSend = new Date(delayedMessageDto.timeToSend);
+
+    schedule.scheduleJob(timeToSend, () => {
+      this.handleMessage(delayedMessageDto, userChats);
+    });
   }
 
   sendMessage(message: Message) {

@@ -9,6 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 import { CreateMessageDto } from '../message/dto/create-message.dto';
+import { DelayedMessageDto } from '../message/dto/delayed-message.dto';
 import { PollingService } from './polling.service';
 import { JwtPayload } from './polling.service';
 import { EVENT, ACTION } from '../shared/constants';
@@ -75,7 +76,9 @@ export class PollingGateway
   }
 
   async handleConnection(client: AuthSocket) {
-    const token = client.handshake.auth.token;
+    // const token = client.handshake.auth.token;
+    const token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWMxMTYzNWFhZjcwYjMwMGI0NDNiN2EiLCJ1c2VybmFtZSI6ImtpcmlsbCIsImVtYWlsIjoia2lyaWxsMTA4Ym9sQGdtYWlsLmNvbSIsImlhdCI6MTcwNzE1Mjk0OX0.-CpN4P69mh2jIY-2gDYvsmYAmVH6u77P_2dks65NzzU';
 
     try {
       const user = this.pollingService.handleConnection(token) as JwtPayload & {
@@ -107,6 +110,15 @@ export class PollingGateway
   @SubscribeMessage(EVENT.MESSAGE_VIEWED)
   handleMessageViewed(@MessageBody() seenFrom: SeenFrom) {
     this.pollingService.handleMessageViewed(seenFrom);
+  }
+
+  @SubscribeMessage(EVENT.MESSAGE_DELAYED)
+  handleMessageDelayed(
+    @ConnectedSocket() client: AuthSocket,
+    @MessageBody() delayedMessageDto: DelayedMessageDto,
+  ) {
+    const userChats = client.user.chats;
+    this.pollingService.handleMessageDelayed(delayedMessageDto, userChats);
   }
 
   @SubscribeMessage(EVENT.PING)

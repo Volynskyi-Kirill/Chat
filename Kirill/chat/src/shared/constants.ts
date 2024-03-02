@@ -1,5 +1,6 @@
 export const EVENT = {
   MESSAGE: 'message',
+  MESSAGE_DELAYED: 'message delayed',
   MESSAGE_CREATED: 'message created',
   MESSAGE_VIEWED: 'message viewed',
   MESSAGE_SEEN_AT_UPDATED: 'message seen at updated',
