@@ -76,9 +76,7 @@ export class PollingGateway
   }
 
   async handleConnection(client: AuthSocket) {
-    // const token = client.handshake.auth.token;
-    const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWMxMTYzNWFhZjcwYjMwMGI0NDNiN2EiLCJ1c2VybmFtZSI6ImtpcmlsbCIsImVtYWlsIjoia2lyaWxsMTA4Ym9sQGdtYWlsLmNvbSIsImlhdCI6MTcwNzE1Mjk0OX0.-CpN4P69mh2jIY-2gDYvsmYAmVH6u77P_2dks65NzzU';
+    const token = client.handshake.auth.token;
 
     try {
       const user = this.pollingService.handleConnection(token) as JwtPayload & {
